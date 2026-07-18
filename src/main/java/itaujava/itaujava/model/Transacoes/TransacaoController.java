@@ -1,5 +1,11 @@
 package itaujava.itaujava.model.Transacoes;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import itaujava.itaujava.model.docs.EstatisticaControllerDoc;
+import itaujava.itaujava.model.docs.TransacaoControllerDoc;
+import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/transacao")
-public class TransacaoController {
+public class TransacaoController implements TransacaoControllerDoc {
 
     private final TransacaoService service;
     private final TransacaoRepository repository;
@@ -16,6 +22,7 @@ public class TransacaoController {
         this.service = service;
         this.repository = repository;
     }
+
 
     @PostMapping
     public ResponseEntity adicionar(@RequestBody TransacaoRequest transacaoRequest) {
@@ -37,9 +44,14 @@ public class TransacaoController {
 
     @DeleteMapping
     public ResponseEntity deletar(@RequestBody TransacaoRequest transacaoRequest) {
-        repository.deletarDados(transacaoRequest);
-        log.info("Deletando transacao: " + transacaoRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            repository.deletarDados(transacaoRequest);
+            log.info("Deletando transacao: " + transacaoRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (IllegalArgumentException exception) {
+            log.error("Erro ao deletar transacao", exception);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).build();
+        }
     }
 
 }

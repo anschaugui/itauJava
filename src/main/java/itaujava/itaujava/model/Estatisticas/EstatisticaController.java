@@ -1,6 +1,7 @@
 package itaujava.itaujava.model.Estatisticas;
 
 import itaujava.itaujava.model.Transacoes.TransacaoRepository;
+import itaujava.itaujava.model.docs.EstatisticaControllerDoc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import java.time.OffsetDateTime;
 @Slf4j
 @RestController
 @RequestMapping("/estatistica")
-public class EstatisticaController {
+public class EstatisticaController implements EstatisticaControllerDoc {
 
     // criar rota de estatistica
     private final EstatisticaProperties estatisticaProperties;
@@ -34,5 +35,4 @@ public class EstatisticaController {
                 .minusSeconds(estatisticaProperties.segundos());
         return ResponseEntity.ok().body(transacaoRepository.estatistica(horaInicial));
     }
-
 }
